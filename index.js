@@ -85,14 +85,14 @@ function draw_plane() {
         ctx.fillText('X', canvas.width / 2 - space - arrow_height, -text_space);
         ctx.fillText('Y', text_space, -canvas.width / 2 + space + arrow_height);
 
-        ctx.fillText();
-        ctx.fillText();
-        ctx.fillText();
-        ctx.fillText();
+        ctx.fillText('-R', -R - 10, -text_space);
+        ctx.fillText('-R/2', -R/2 - 10, -text_space);
+        ctx.fillText('R/2', R/2 - 10, -text_space);
+        ctx.fillText('R', R - 5, -text_space);
 
-        ctx.fillText();
-        ctx.fillText();
-        ctx.fillText();
-        ctx.fillText();
+        ctx.fillText('-R', text_space, R + 5);
+        ctx.fillText('-R/2', text_space, R/2 + 5);
+        ctx.fillText('R/2', text_space, -R/2 + 5);
+        ctx.fillText('R', text_space, -R + 5);
     }
 }
