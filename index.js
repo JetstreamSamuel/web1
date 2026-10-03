@@ -52,7 +52,12 @@ function checkForm() {
 }
 
 function isHit(x, y, r) {
+    const circle = (x <= 0 && Math.abs(x) <= r && y <= 0 && Math.abs(y) <= r &&
+        Math.pow(x, 2) + Math.pow(y, 2) === Math.pow(r, 2));
+    const rectangle = (x <= 0 && Math.abs(x) <= r && y >= 0 && y <= r/2 && y <= 1/2 * x + r/2);
+    const square = (x >= 0 && x <= r && y >= 0 && y <= r);
 
+    return circle || rectangle || square;
 }
 
 
@@ -66,7 +71,6 @@ function draw() {
     if (!validR()) return;
 
     draw_figures(R);
-    draw_plane();
 }
 
 function draw_plane() {
@@ -165,6 +169,37 @@ async function submit() {
     const X = Number(form.elements.X.value);
     const Y = Number(Y_input.value.replaceAll(',', '.'));
     const R = Number(R_input.value.replaceAll(',', '.'));
+
+    if (!validNumbers(X, Y, R)) return;
+
+    const point = {
+        x: X,
+        y: Y,
+        r: R,
+        isHit: isHit(X, Y, R),
+        date: Date.now()
+    }
+    try {
+        points.push(point);
+        draw_table();
+        draw();
+        try {
+
+        } catch {
+
+        }
+    } catch {
+
+    } finally {
+
+    }
+
+}
+
+function draw_table() {
+    for (let point of points) {
+
+    }
 }
 
 function draw_hits() {
@@ -177,7 +212,12 @@ function draw_hit() {
 }
 
 function clear() {
+    if (!confirm('Очистить историю?')) return;
+    try {
 
+    } catch {
+
+    }
 }
 
 
