@@ -1,9 +1,12 @@
+'use strict';
+
 const canvas = document.getElementById('plane');
 const ctx = canvas.getContext('2d');
 const form = document.getElementById('form');
 const R_input = document.getElementById('POST-R');
 const Y_input = document.getElementById('POST-Y');
 const submit_button = document.getElementById('submit_button');
+const clear_button = document.getElementById('clear_button');
 
 const space = 20;
 const arrow_width = 5;
@@ -11,6 +14,8 @@ const arrow_height = 10;
 const line_width = 1.5;
 const text_space = 10;
 const R_coef = (canvas.width / 2 - space) * 0.75 / 5
+
+let points = [];
 
 ctx.font = '15px Arial';
 ctx.lineWidth = line_width;
@@ -21,9 +26,9 @@ function validNumbers(x, y, r) {
 }
 
 function validY() {
-    const text_Y = Y_input.value;
-    const Y = Number(text_Y.replaceAll(",", "."));
-    if (-5 <= Y && Y <= 5) {
+    const text_Y = Y_input.value.replaceAll(",", ".");
+    const Y = Number(text_Y);
+    if (-5 <= Y && Y <= 5 && !(text_Y === '')) {
         Y_input.setCustomValidity("");
         return true;
     }
@@ -31,13 +36,19 @@ function validY() {
     return false;
 }
 
-function validR(R) {
-    if (2 <= R && R <= 5) {
+function validR() {
+    const text_R = R_input.value.replaceAll(",", ".");
+    const R = Number(text_R);
+    if (2 <= R && R <= 5 && !(text_R === '')) {
         R_input.setCustomValidity("");
         return true;
     }
     R_input.setCustomValidity("Введите число строго между 2 и 5");
     return false;
+}
+
+function checkForm() {
+    submit_button.disabled = !validR() || !validY();
 }
 
 function isHit(x, y, r) {
@@ -47,15 +58,15 @@ function isHit(x, y, r) {
 
 function draw() {
     ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
-    const text_R = R_input.value;
-    const R = Number(text_R.replaceAll(",", "."));
-    if (!validR(R)) {
-        draw_plane();
-        return;
-    }
+    const text_R = R_input.value.replaceAll(",", ".");
+    const R = Number(text_R);
 
     draw_plane();
+    checkForm();
+    if (!validR()) return;
+
     draw_figures(R);
+    draw_plane();
 }
 
 function draw_plane() {
@@ -149,11 +160,23 @@ function draw_figures(R) {
     ctx.fillText('R', text_space, -R * R_coef + 5);
 }
 
-function submit() {
+
+async function submit() {
+    const X = Number(form.elements.X.value);
+    const Y = Number(Y_input.value.replaceAll(',', '.'));
+    const R = Number(R_input.value.replaceAll(',', '.'));
+}
+
+function draw_hits() {
 
 }
 
+
 function draw_hit() {
+
+}
+
+function clear() {
 
 }
 
@@ -163,7 +186,11 @@ form.addEventListener('submit', (event) => {
 });
 
 R_input.addEventListener('input', draw);
-Y_input.addEventListener('input', validY);
+Y_input.addEventListener('input', checkForm);
+R_input.addEventListener('change', () => {if (!validY()) R_input.reportValidity();});
+Y_input.addEventListener('change', () => {if (!validY()) Y_input.reportValidity();});
+
 submit_button.addEventListener('click', submit);
+clear_button.addEventListener('click', clear);
 
 draw();

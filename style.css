@@ -5,3 +5,14 @@ canvas {
 header {
     font-family: sans-serif;
 }
+
+#submit_button {
+    background-color: lightcyan;
+    border: 1px solid lightblue;
+    border-radius: 10px;
+    box-shadow: 3px 3px 3px lightblue;
+}
+
+#submit_button:hover {
+    background-color: cyan;
+}
