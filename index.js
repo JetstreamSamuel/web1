@@ -76,7 +76,6 @@ function draw() {
 function draw_plane() {
     ctx.fillStyle = 'rgb(0, 0, 0)';
 
-
     ctx.beginPath();
     ctx.moveTo(0, canvas.height / 2 - space);
     ctx.lineTo(0, -canvas.height / 2 + space);
@@ -93,8 +92,6 @@ function draw_plane() {
     ctx.lineTo(canvas.width / 2 - space - arrow_height, -arrow_width);
     ctx.moveTo(canvas.width / 2 - space + 1, 0);
     ctx.lineTo(canvas.width / 2 - space - arrow_height, arrow_width);
-
-    ctx.closePath();
     ctx.stroke();
 
     ctx.fillText('X', canvas.width / 2 - space - arrow_height, -text_space);
@@ -111,13 +108,11 @@ function draw_figures(R) {
     ctx.moveTo(-R * R_coef, 0);
     ctx.lineTo(0, 0);
     ctx.lineTo(0, R/2 * R_coef);
-    ctx.closePath();
     ctx.fill();
 
     ctx.beginPath();
     ctx.arc(0, 0, R * R_coef, Math.PI, 3*Math.PI/2);
     ctx.lineTo(0, 0);
-    ctx.closePath();
     ctx.fill();
 
     ctx.globalCompositeOperation = 'source-over';
@@ -149,8 +144,6 @@ function draw_figures(R) {
 
     ctx.moveTo(-5, -R * R_coef);
     ctx.lineTo(5, -R * R_coef);
-
-    ctx.closePath();
     ctx.stroke();
 
     ctx.fillText('-R', -R * R_coef - 10, -text_space);
@@ -166,11 +159,12 @@ function draw_figures(R) {
 
 
 async function submit() {
+
     const X = Number(form.elements.X.value);
     const Y = Number(Y_input.value.replaceAll(',', '.'));
     const R = Number(R_input.value.replaceAll(',', '.'));
 
-    if (!validNumbers(X, Y, R)) return;
+    if (validNumbers(X, Y, R)) return;
 
     const point = {
         x: X,
@@ -179,20 +173,10 @@ async function submit() {
         isHit: isHit(X, Y, R),
         date: Date.now()
     }
-    try {
-        points.push(point);
-        draw_table();
-        draw();
-        try {
 
-        } catch {
-
-        }
-    } catch {
-
-    } finally {
-
-    }
+    points.push(point);
+    draw();
+    draw_hit(point);
 
 }
 
@@ -207,8 +191,12 @@ function draw_hits() {
 }
 
 
-function draw_hit() {
-
+function draw_hit(point) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = point.isHit ? "rgb(0, 200, 0)" : "rgb(200, 0, 0)";
+    ctx.beginPath();
+    ctx.arc(point.x * R_coef, point.y * R_coef, 4, 0, 2 * Math.PI);
+    ctx.fill();
 }
 
 function clear() {
