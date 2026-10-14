@@ -8,8 +8,10 @@ const Y_input = document.getElementById('POST-Y');
 const submit_button = document.getElementById('submit_button');
 const clear_button = document.getElementById('clear_button');
 const table = document.getElementById('results');
-const local_storage_key = '';
+const message = document.getElementById('message');
+const local_storage_key = 'check_point_hit_lab1';
 
+const point_radius = 4.3;
 const space = 20;
 const arrow_width = 5;
 const arrow_height = 10;
@@ -51,6 +53,10 @@ function validR() {
 
 function checkForm() {
     submit_button.disabled = !validR() || !validY();
+}
+
+function checkClear() {
+    clear_button.disabled = points.length < 1;
 }
 
 function isHit(x, y, r) {
@@ -179,20 +185,18 @@ async function submit() {
     }
     try {
         points.push(point);
-        draw_table();
-        draw();
         try {
             localStorage.setItem(local_storage_key, JSON.stringify(points) );
         } catch {
-            console.log('Не удалось загрузить в LocalStorage')
+            message.textContent = 'Не удалось загрузить в LocalStorage';
         }
     } catch {
-        console.log('Не удалось выполнить проверку')
+        message.textContent = 'Не удалось выполнить проверку';
+    } finally {
+        draw_table();
+        draw();
+        checkClear();
     }
-
-
-
-
 }
 
 function updateDate(){
@@ -230,19 +234,32 @@ function draw_hit(point) {
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = point.isHit ? "rgb(0, 255, 0)" : "rgb(255, 0, 0)";
     ctx.beginPath();
-    ctx.arc(point.x * R_coef, -point.y * R_coef, 4, 0, 2 * Math.PI);
+    ctx.arc(point.x * R_coef, -point.y * R_coef, point_radius, 0, 2 * Math.PI);
     ctx.fill();
 }
 
 function clear() {
     if (!confirm('Очистить историю?')) return;
     try {
-
+        localStorage.removeItem(local_storage_key);
+        points = [];
+        message.textContent = 'История очищена';
     } catch {
-
+        message.textContent = 'Не удалось очистить историю';
+    } finally {
+        draw_table();
+        draw();
+        checkClear();
     }
 }
 
+function load_history() {
+    try {
+        points = JSON.parse(localStorage.getItem(local_storage_key)|| '[]');
+    } catch {
+        message.textContent = 'Не удалось загрузить историю';
+    }
+}
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -250,10 +267,19 @@ form.addEventListener('submit', (event) => {
 
 R_input.addEventListener('input', draw);
 Y_input.addEventListener('input', checkForm);
-R_input.addEventListener('change', () => {if (!validY()) R_input.reportValidity();});
+R_input.addEventListener('change', () => {if (!validR()) R_input.reportValidity();});
 Y_input.addEventListener('change', () => {if (!validY()) Y_input.reportValidity();});
 
 submit_button.addEventListener('click', submit);
 clear_button.addEventListener('click', clear);
 
+setInterval(updateDate, 1000);
+window.addEventListener('focus', updateDate);
+
+
+load_history();
+draw_table();
+checkClear();
+draw_hits();
 draw();
+
