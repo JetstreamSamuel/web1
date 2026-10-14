@@ -1,18 +1,174 @@
-canvas {
-    border: 1px solid black;
+body {
+    margin: 0;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    color: #243047;
+    background-color: #f4f6fa;
 }
 
-header {
+.header,
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.header {
     font-family: sans-serif;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+    padding: 25px 30px;
+    background-color: white;
+    border-left: 5px solid #7c3aed;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #0000000d;
 }
 
-#submit_button {
-    background-color: lightcyan;
-    border: 1px solid lightblue;
-    border-radius: 10px;
-    box-shadow: 3px 3px 3px lightblue;
+.header h1 {
+    margin: 0 0 15px;
+    color: #243047;
+    font-size: 28px;
 }
 
-#submit_button:hover {
-    background-color: cyan;
+.header-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 25px;
+}
+
+.header-info p {
+    margin: 0;
+    color: #64748b;
+    font-size: 15px;
+}
+
+.header-info strong {
+    color: #7c3aed;
+}
+
+.layout {
+    display: flex;
+    gap: 20px;
+}
+
+section {
+    padding: 25px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #0000000d;
+}
+
+.layout section {
+    flex: 1;
+    min-width: 0;
+}
+
+.layout section:first-child {
+    overflow-x: auto;
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+}
+
+fieldset {
+    margin: 0 0 20px;
+    padding: 0;
+    border: none;
+}
+
+legend {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.buttons label {
+    cursor: pointer;
+}
+
+br {
+    display: none;
+}
+
+input[type="radio"] {
+    accent-color: #7c3aed;
+}
+
+input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 8px 0 20px;
+    padding: 12px;
+    border: 1px solid #ccd3df;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+input[type="text"]:focus {
+    outline: 2px solid #7c3aed;
+}
+
+button,
+input[type="submit"] {
+    padding: 12px 18px;
+    color: white;
+    background-color: #7c3aed;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+input[type="submit"] {
+    width: 100%;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #6d28d9;
+}
+
+main > section {
+    margin-top: 20px;
+}
+
+main > section h1 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.check-table {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+    background-color: #eff4ff;
+}
+
+@media (max-width: 800px) {
+    body {
+        padding: 15px;
+    }
+    .layout {
+        flex-direction: column;
+    }
 }

@@ -7,6 +7,8 @@ const R_input = document.getElementById('POST-R');
 const Y_input = document.getElementById('POST-Y');
 const submit_button = document.getElementById('submit_button');
 const clear_button = document.getElementById('clear_button');
+const table = document.getElementById('results');
+const local_storage_key = '';
 
 const space = 20;
 const arrow_width = 5;
@@ -53,11 +55,11 @@ function checkForm() {
 
 function isHit(x, y, r) {
     const circle = (x <= 0 && Math.abs(x) <= r && y <= 0 && Math.abs(y) <= r &&
-        Math.pow(x, 2) + Math.pow(y, 2) === Math.pow(r, 2));
-    const rectangle = (x <= 0 && Math.abs(x) <= r && y >= 0 && y <= r/2 && y <= 1/2 * x + r/2);
-    const square = (x >= 0 && x <= r && y >= 0 && y <= r);
-
-    return circle || rectangle || square;
+        (Math.pow(x, 2) + Math.pow(y, 2)) <= Math.pow(r, 2));
+    const triangle = (x <= 0 && Math.abs(x) <= r && y >= 0 && Math.abs(y) <= r/2 &&
+        (y <= (1/2 * x + r/2)));
+    const square = (x >= 0 && Math.abs(x) <= r && y >= 0 && Math.abs(y) <= r);
+    return circle || triangle || square;
 }
 
 
@@ -71,6 +73,8 @@ function draw() {
     if (!validR()) return;
 
     draw_figures(R);
+    draw_hits(R);
+    draw_table();
 }
 
 function draw_plane() {
@@ -100,7 +104,7 @@ function draw_plane() {
 
 function draw_figures(R) {
     ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = 'rgb(0, 140, 255)';
+    ctx.fillStyle = 'pink';
 
     ctx.fillRect(0, 0, R * R_coef, R * R_coef);
 
@@ -170,32 +174,63 @@ async function submit() {
         x: X,
         y: Y,
         r: R,
-        isHit: isHit(X, Y, R),
+        isHit: isHit(X, -Y, R),
         date: Date.now()
     }
+    try {
+        points.push(point);
+        draw_table();
+        draw();
+        try {
+            localStorage.setItem(local_storage_key, JSON.stringify(points) );
+        } catch {
+            console.log('Не удалось загрузить в LocalStorage')
+        }
+    } catch {
+        console.log('Не удалось выполнить проверку')
+    }
 
-    points.push(point);
-    draw();
-    draw_hit(point);
 
+
+
+}
+
+function updateDate(){
+    for(const time of document.querySelectorAll('time')){
+        time.textContent = new Date(time.dateTime).toLocaleString('ru-Ru');
+    }
 }
 
 function draw_table() {
-    for (let point of points) {
+    table.textContent = '';
 
+    for (const point of points) {
+        const row = table.insertRow();
+        row.insertCell().textContent = point.x;
+        row.insertCell().textContent = point.y;
+        row.insertCell().textContent = point.r;
+        row.insertCell().textContent = point.isHit ? "Попадание" : "Промах";
+        const time = document.createElement('time');
+        time.dateTime = new Date(point.date).toISOString();
+        row.insertCell().append(time);
     }
+    updateDate();
 }
 
-function draw_hits() {
-
+function draw_hits(current_R) {
+    for (const point of points) {
+        if (current_R === point.r) {
+            draw_hit(point);
+        }
+    }
 }
 
 
 function draw_hit(point) {
     ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = point.isHit ? "rgb(0, 200, 0)" : "rgb(200, 0, 0)";
+    ctx.fillStyle = point.isHit ? "rgb(0, 255, 0)" : "rgb(255, 0, 0)";
     ctx.beginPath();
-    ctx.arc(point.x * R_coef, point.y * R_coef, 4, 0, 2 * Math.PI);
+    ctx.arc(point.x * R_coef, -point.y * R_coef, 4, 0, 2 * Math.PI);
     ctx.fill();
 }
 
