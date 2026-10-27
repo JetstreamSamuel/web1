@@ -282,4 +282,3 @@ draw_table();
 checkClear();
 draw_hits();
 draw();
-
