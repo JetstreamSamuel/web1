@@ -134,6 +134,7 @@ function draw_figures(R) {
     ctx.lineTo(0, R/2 * R_coef);
     ctx.fill();
 
+
     ctx.beginPath();
     ctx.arc(0, 0, R * R_coef, Math.PI, 3*Math.PI/2);
     ctx.lineTo(0, 0);
