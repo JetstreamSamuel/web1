@@ -26,6 +26,20 @@ ctx.lineWidth = line_width;
 ctx.translate(canvas.width / 2, canvas.height / 2);
 
 function validNumbers(x, y, r) {
+    const validX = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
+    if (!validX.includes(x)) {
+        return false;
+    }
+    if (!Number.isFinite(y) || y > 5 || y < -5 ) {
+        return false;
+    }
+
+    if (!Number.isFinite(r) || r > 5 || r < 2) {
+        return false;
+    }
+
+    return true;
+
 
 }
 
@@ -174,7 +188,7 @@ async function submit() {
     const Y = Number(Y_input.value.replaceAll(',', '.'));
     const R = Number(R_input.value.replaceAll(',', '.'));
 
-    if (validNumbers(X, Y, R)) return;
+    if (!validNumbers(X, Y, R)) return;
 
     const point = {
         x: X,
